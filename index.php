@@ -18,22 +18,35 @@ require('classes/API.php');
     <!-- Navigation menu -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
         <div class="container">
-            <a class="navbar-brand w3-bar-item text-truncate" style="font-size: 3vmin;" href="#">Parafia Najświętszej
+            <a class="navbar-brand w3-bar-item text-truncate" style="font-size: 2.1vmin;" href="index.php">Parafia
+                Najświętszej
                 Maryi Panny Częstochowskiej
                 w Brzezinach</a>
+            <button style="font-size: 2.1vmin;" class="navbar-toggler" type="button" data-toggle="collapse"
+                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
+                aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarResponsive">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item">
+                        <a style="font-size: 2.1vmin;" class="nav-link" href="logowanie.php">Zaloguj</a>
+                    </li>
+                </ul>
+            </div>
         </div>
     </nav>
 
     <!-- Main content -->
     <div class="container">
-        <div class="row">
+        <div class="row ">
             <div class="col-lg-12 text-center">
                 <img src="./img/nmp.jpg" class="img-responsive mt-3" width="300" height="420" alt="obraz">
-                <h3 class="mt-4">Intencje parafialne na najbliższy tydzień</h3>
+                <h3 class="mt-4">Intencje parafialne na najbliższe dni</h3>
             </div>
         </div>
         <div class="table-responsive">
-            <table class="table">
+            <table class="table table-bordered table-striped table-nonfluid">
                 <tbody>
                     <?php
 					$api = new API;
@@ -50,9 +63,9 @@ require('classes/API.php');
 									<td>';
 								for ($j = 0; $j < sizeof($result[$i]->intentionList); $j++) {
 									$intention = $result[$i]->intentionList[$j];
-									echo '<p><b>' . substr($intention->date, 11, -12) . '</b>	    ' . $intention->text . '</p>';
+									echo '<p><b>' . substr($intention->date, 11, -12) . '</b>        ' . $intention->text . '</p>';
 								}
-								echo '<td>
+								echo '</td>
 							</tr>';
 							}
 						}
@@ -71,6 +84,9 @@ require('classes/API.php');
     <script src="vendor/jquery/jquery.min.js"></script>
     <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
 
+    <?php
+	include "footer.php";
+	?>
 </body>
 
 </html>

@@ -36,9 +36,9 @@ class API
       }
       // EXECUTE:
       $result = curl_exec($curl);
-      if (!$result) {
-         die("Connection Failure");
-      }
+      // if (!$result) {
+      //    die("Connection Failure");
+      // }
       curl_close($curl);
       return $result;
    }

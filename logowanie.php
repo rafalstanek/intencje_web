@@ -1,12 +1,12 @@
 ﻿<!DOCTYPE html>
 <?php
-session_start();
 require('classes/API.php');
-if (isset($_SESSION['user'])) {
-	//header('Location: controll.php');
+session_start();
+if (isset($_SESSION['user_type'])) {
+    header('Location: panel.php');
 }
-?>
 
+?>
 <html>
 
 <head>
@@ -14,7 +14,7 @@ if (isset($_SESSION['user'])) {
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Zarządzanie intencjami">
     <meta name="author" content="Rafal Stanek">
-    <title>Panel</title>
+    <title>Logowanie</title>
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -22,74 +22,107 @@ if (isset($_SESSION['user'])) {
     <!-- Navigation menu -->
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark static-top">
         <div class="container">
-            <a class="navbar-brand" href="#">Panel</a>
+            <a class="navbar-brand w3-bar-item text-truncate" style="font-size: 2.1vmin;" href="index.php">Parafia
+                Najświętszej
+                Maryi Panny Częstochowskiej
+                w Brzezinach</a>
         </div>
     </nav>
 
     <!-- Main content -->
-    <div class="container">
-        <div class="row">
-            <div class="col-lg-12 text-center">
-                <h1 class="mt-5">Logowanie</h1>
-                <p class="lead">Aby się zalogować użyj loginu i hasła</p>
-                <center>
-                    <form method="post" action="">
-                        <div class="form-group mx-sm-3 mb-2">
-                            <input class="form-control w-25" type="text" id="login" name="login"
-                                placeholder="nazwa użytkownika"><br>
-                            <input class="form-control w-25" type="password" id="password" name="password"
-                                placeholder="hasło"><br>
-                            <input class="btn btn-primary" type="submit" name="loginUser" value="Zaloguj">
+    <div class="container" style="padding-top: 8%">
+        <div class="row d-flex justify-content-center mx-auto">
+            <div class="col-lg-12 text-center mt-2">
+
+                <form method="post" action="">
+                    <div class="form-group top-buffer">
+                        <div class="row ustify-content-md-center">
+                            <div class="col-md-2 align-self-center">
+                                <label class="font-weight-bold">Nazwa użytkownika</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" id="login" name="login"
+                                    placeholder="nazwa użytkownika">
+                            </div>
+                            <div id="user_text" class="col-sm align-self-center text-center">
+                            </div>
                         </div>
-                    </form>
-                </center>
-                <?php
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-2 align-self-center">
+                                <label class="font-weight-bold">Hasło</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="password" id="password" name="password"
+                                    placeholder="hasło">
+                            </div>
+                            <div id="pass_text" class="col-sm align-self-center text-center">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="error_text">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input class="btn btn-primary" type="submit" name="logging" value="Zaloguj">
+                        </div>
+                    </div>
+                </form>
 
-				if (isset($_POST['loginUser'])) {
-					$login = $_POST['login'];
-					$password = $_POST['password'];
-
-					$data = array(
-						'login' => $login,
-						'password' => $password
-					);
-					$payload = http_build_query($data);
-					$api = new API;
-					$loginUser = $api->callAPI("GET", "http://localhost:8090/api/user/login" . "?" . $payload, null, "123");
-					$result = json_decode($loginUser);
-
-					if ($result->id > 0) {
-						if ($result->role == 0) {
-							$_SESSION['user'] = "user";
-							header('Location: controll.php');
-						} else {
-							$_SESSION['doctor'] = "doctor";
-							$_SESSION['hospital_ID'] = -1;
-							$_SESSION['title'] = $result->title;
-							$_SESSION['speciality'] = $result->speciality;
-							header('Location: main.php');
-						}
-						$_SESSION['id'] = $result->id;
-						$_SESSION['firstName'] = $result->firstName;
-						$_SESSION['lastName'] = $result->firstName;
-					} else {
-						echo "<p class='lead'><font color='red'>Nieprawidłowy login lub hasło</font></p>";
-					}
-
-					//else
-					//{
-					//	echo "<p class='lead'><font color='red'>Nieprawidłowe dane logowania</font></p>";
-					//}
-				}
-				?>
             </div>
         </div>
-    </div>
+        <?php
+        if (isset($_POST['logging'])) {
+            $login = $_POST['login'];
+            $password = $_POST['password'];
+            $validate = 0;
+            if (strlen($password) == 0) {
+                echo '<script>document.getElementById("pass_text").innerHTML = "To pole nie może być puste!";
+                document.getElementById("pass_text").style.color = "red";</script>';
+            } else {
+                $validate++;
+            }
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+            if (strlen($login) == 0) {
+                echo '<script>document.getElementById("user_text").innerHTML = "To pole nie może być puste!";
+                document.getElementById("user_text").style.color = "red";</script>';
+            } else {
+                $validate++;
+            }
 
+            if ($validate == 2) {
+                $data = array(
+                    'username' => $login,
+                    'password' => $password
+                );
+                $payload = http_build_query($data);
+                $api = new API;
+                $loginUser = $api->callAPI("GET", "http://localhost:8090/token" . "?" . $payload, null, null);
+
+                if (strlen($loginUser) != 0) {
+                    $result = json_decode($loginUser);
+                    $_SESSION['user_id'] = $result->id;
+                    $_SESSION['user_token'] = $result->token;
+                    $_SESSION['user_type'] = "user";
+                    header('Location: panel.php');
+                } else {
+                    echo '<script>document.getElementById("error_text").innerHTML = "Niepoprawny login i/lub hasło!";
+                    document.getElementById("error_text").style.color = "red";</script>';
+                }
+            } else {
+                echo '<script>document.getElementById("error_text").innerHTML = "Uzupełnij pole loginu i hasła!";
+                document.getElementById("error_text").style.color = "red";</script>';
+            }
+        }
+        ?>
+
+        <!-- Bootstrap core JavaScript -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <?php
+        include "footer.php";
+        ?>
 </body>
 
 </html>
