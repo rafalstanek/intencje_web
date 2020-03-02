@@ -2,6 +2,7 @@
 <?php
 require('classes/API.php');
 session_start();
+
 if (isset($_SESSION['user_type'])) {
     header('Location: panel.php');
 }
@@ -35,10 +36,10 @@ if (isset($_SESSION['user_type'])) {
             <div class="col-lg-12 text-center mt-2">
 
                 <form method="post" action="">
-                    <div class="form-group top-buffer">
+                    <div class="form-group">
                         <div class="row ustify-content-md-center">
-                            <div class="col-md-2 align-self-center">
-                                <label class="font-weight-bold">Nazwa użytkownika</label>
+                            <div class="col-md-2 align-self-center text-left">
+                                <label class="font-weight-bold">Nazwa użytkownika:</label>
                             </div>
                             <div class="col-sm-7">
                                 <input class="form-control" type="text" id="login" name="login"
@@ -50,8 +51,8 @@ if (isset($_SESSION['user_type'])) {
                     </div>
                     <div class="form-group">
                         <div class="row">
-                            <div class="col-md-2 align-self-center">
-                                <label class="font-weight-bold">Hasło</label>
+                            <div class="col-md-2 align-self-center text-left">
+                                <label class="font-weight-bold">Hasło:</label>
                             </div>
                             <div class="col-sm-7">
                                 <input class="form-control" type="password" id="password" name="password"
@@ -99,13 +100,17 @@ if (isset($_SESSION['user_type'])) {
                 $payload = http_build_query($data);
                 $api = new API;
                 $loginUser = $api->callAPI("GET", "http://localhost:8090/token" . "?" . $payload, null, null);
-
-                if (strlen($loginUser) != 0) {
+                if ($loginUser != "error") {
                     $result = json_decode($loginUser);
-                    $_SESSION['user_id'] = $result->id;
-                    $_SESSION['user_token'] = $result->token;
-                    $_SESSION['user_type'] = "user";
-                    header('Location: panel.php');
+                    if ($result != null) {
+                        $_SESSION['user_id'] = $result->id;
+                        $_SESSION['user_token'] = $result->token;
+                        $_SESSION['user_type'] = "user";
+                        header('Location: panel.php');
+                    } else {
+                        echo '<script>document.getElementById("error_text").innerHTML = "Brak połączenia z serwerem";
+                    document.getElementById("error_text").style.color = "red";</script>';
+                    }
                 } else {
                     echo '<script>document.getElementById("error_text").innerHTML = "Niepoprawny login i/lub hasło!";
                     document.getElementById("error_text").style.color = "red";</script>';
