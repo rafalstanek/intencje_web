@@ -124,7 +124,7 @@ if (isset($_SESSION['user_type'])) {
                     //$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
                     $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
                     $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-                    $pdf->SetPrintHeader(false);
+                    $pdf->SetPrintHeader(true);
                     $pdf->SetPrintFooter(false);
                     // $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
                     // $pdf->SetFooterMargin(PDF_MARGIN_FOOTER);
