@@ -39,9 +39,6 @@ if (isset($_SESSION['user_type'])) {
                         <a style="font-size: 2.1vmin;" class="nav-link" href="zarzadzaj.php">Zarządzaj</a>
                     </li>
                     <li class="nav-item">
-                        <a style="font-size: 2.1vmin;" class="nav-link" href="ustawienia.php">Zmień hasło</a>
-                    </li>
-                    <li class="nav-item">
                         <a style="font-size: 2.1vmin;" class="nav-link" href="wyloguj.php">Wyloguj</a>
                     </li>
                 </ul>

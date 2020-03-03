@@ -101,4 +101,43 @@ $(document).ready(function () {
       alert('Musisz podać godzinę')
     }
   })
+  $('#change_pass_button').click(function () {
+    var old_password = $('#old_password').val()
+    var new_password = $('#new_password').val()
+    var re_password = $('#re_password').val()
+
+    if (old_password != '' && new_password != '' && re_password != '') {
+      if (new_password == re_password) {
+        $.ajax({
+          url: 'change_password.php',
+          method: 'POST',
+          data: {
+            old_password: old_password,
+            new_password: new_password
+          },
+          success: function (data) {
+            if (data.length != 0) {
+              if (data == 'error') {
+                alert('Wystąpił błąd w zmianie hasła')
+              } else {
+                var json = JSON.parse(data)
+                if (json.id != null) {
+                  location.reload()
+                  alert('Hasło zostało zmienione pomyślnie')
+                } else {
+                  alert('Podano niepoprawne hasło!')
+                }
+              }
+            } else {
+              alert($error_string)
+            }
+          }
+        })
+      } else {
+        alert('Nowe hasła muszą się zgadzać ze sobą')
+      }
+    } else {
+      alert('Uzupełnij wszystkie pola!')
+    }
+  })
 })

@@ -62,18 +62,16 @@ class MYPDF extends TCPDF
         $this->writeHTML($tbl, true, false, false, false, '');
     }
 
-    public function SetSettings($result)
+    public function setSettings($result, $filename)
     {
         $this->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-        //  $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
         $this->SetPrintHeader(false);
         $this->SetPrintFooter(false);
         $this->setImageScale(PDF_IMAGE_SCALE_RATIO);
-        // $fontname = TCPDF_FONTS::addTTFfont('classes/tcpdf_min/fonts/czcionka.ttf', 'TrueTypeUnicode', '', 96);
         $this->SetFont('courier', '', 15);
         $this->AddPage();
         $this->ColoredTable($result);
         ob_clean();
-        $this->Output('doc.pdf', 'I'); //D - od razu pobiera
+        $this->Output($filename . '.pdf', 'D'); //D - od razu pobiera
     }
 }

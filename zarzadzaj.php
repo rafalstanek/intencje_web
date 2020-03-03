@@ -6,7 +6,7 @@ require_once('classes/API.php');
 
 if (isset($_SESSION['user_type'])) {
     if ($_SESSION['user_type'] == "user") {
-        include 'modal.php';
+
 ?>
 <html>
 
@@ -45,9 +45,6 @@ if (isset($_SESSION['user_type'])) {
                         <a style="font-size: 2.1vmin;" class="nav-link active" href="#">Zarządzaj</a>
                     </li>
                     <li class="nav-item">
-                        <a style="font-size: 2.1vmin;" class="nav-link" href="ustawienia.php">Zmień hasło</a>
-                    </li>
-                    <li class="nav-item">
                         <a style="font-size: 2.1vmin;" class="nav-link" href="wyloguj.php">Wyloguj</a>
                     </li>
                 </ul>
@@ -57,68 +54,147 @@ if (isset($_SESSION['user_type'])) {
 
     <!-- Main content -->
     <div class="container">
-        <div class="row d-flex justify-content-center mx-auto">
-            <div class="col-lg-12 text-center mt-2">
-                <p class="lead">Zarządzanie</p>
-                <button name="btn" id="btn" class="btn btn-info" data-toggle="modal"
-                    data-target="#checkByDateModal">Dodaj
+        <div class="row d-flex justify-content-center mx-auto ">
+            <div class="col-lg text-center mt-2">
+                <button class="btn btn-info" data-toggle="modal" data-target="#checkByDateModal">Dodaj
                     intencję</button>
-                <button type="submit" name="btn" id="btn" class="btn btn-info" data-toggle="modal"
-                    data-target="#exampleModal">Generuj PDF</button>
-                <button type="submit" name="btn" id="btn" class="btn btn-info" data-toggle="modal"
-                    data-target="#exampleModal">Zmień hasło</button>
             </div>
-
-            <!-- MODAL BY DATE-->
-            <div id="checkByDateModal" class="modal fade" role="dialog">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h4 class="mt-1">Dodawanie intencji</h4>
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="row">
-                                <div class="col-2"> <label><b>Data:</b></label></div>
-                                <div class="col-sm"><input type="date" name="date" id="date" class="form-control" />
-                                </div>
-                                <div class="col-sm">
-                                    <button type="button" name="check_intention_button" id="check_intention_button"
-                                        class="btn btn-info">Wybierz</button></div>
-                            </div>
-                            <div id="intention_list">
-
-                            </div>
-                            <div id="textarea_intention_add">
-
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
+            <div class="col-lg text-center mt-2">
+                <button class="btn btn-info" data-toggle="modal" data-target="#generatePDFModal">Generuj PDF</button>
+            </div>
+            <div class="col-lg text-center mt-2">
+                <button class="btn btn-info" data-toggle="modal" data-target="#changePasswordModal">Zmień hasło</button>
             </div>
 
         </div>
 
-        <script type="text/javascript">
+        <!-- MODAL BY DATE-->
+        <div id="checkByDateModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="mt-1">Dodawanie intencji</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-2"> <label><b>Data:</b></label></div>
+                            <div class="col-sm"><input type="date" name="date" id="date" class="form-control" />
+                            </div>
+                            <div class="col-sm">
+                                <button type="button" name="check_intention_button" id="check_intention_button"
+                                    class="btn btn-info">Wybierz</button></div>
+                        </div>
+                        <br />
+                        <div id="intention_list">
 
-        </script>
+                        </div>
+                        <div id="textarea_intention_add">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        <!--
+        <!-- MODAL CHANGE PASSWORD -->
+        <div id="changePasswordModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="mt-1">Zmiana hasła do konta</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-2 align-self-center text-left">
+                                <label class=" font-weight-bold">Aktualne hasło:</label>
+                            </div>
+                            <div class="col-sm">
+                                <input class="form-control" type="password" id="old_password" name="old_password"
+                                    placeholder="nowe hasło">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 align-self-center text-left">
+                                <label class=" font-weight-bold">Nowe hasło:</label>
+                            </div>
+                            <div class="col-sm">
+                                <input class="form-control" type="password" id="new_password" name="new_password"
+                                    placeholder="nowe hasło">
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-2 align-self-center text-left">
+                                <label class=" font-weight-bold">Powtórz hasło:</label>
+                            </div>
+                            <div class="col-sm">
+                                <input class="form-control" type="password" id="re_password" name="re_password"
+                                    placeholder="nowe hasło">
+                            </div>
+                        </div>
+                        <div class="row text-center">
+                            <div class="col-sm px-md-5"><button type="submit" name="change_pass_button"
+                                    id="change_pass_button" class="btn btn-info">Zmień</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        // require_once('pdf.php');
-        // $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-        // $pdf->SetSettings($result);
-        // }
+        <!-- MODAL GENERATE PDF-->
+        <div id="generatePDFModal" class="modal fade" role="dialog">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="mt-1">Generowanie PDF</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="lead">Wybierz zakres dat, z których ma się wygenerować plik .pdf z intencjami</p>
+                        <label><b>Początek:</b></label>
+                        <form method="POST">
+                            <input type="date" name="date_start" id="date_start" class="form-control" />
+                            <label><b>Koniec:</b></label>
+                            <input type="date" name="date_end" id="date_end" class="form-control" /><br />
+                            <div class="row text-center">
+                                <div class="col-sm px-md-5"><button type="submit" name="generate_pdf_button"
+                                        id="generate_pdf_button" class="btn btn-info">Generuj</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-        -->
 
+    </div>
 
+    <?php
+            if (isset($_POST['generate_pdf_button'])) {
+                $start = $_POST['date_start'];
+                $end = $_POST['date_end'];
+                if ($start != null && $end != null) {
+                    if (strtotime($end) - strtotime($start) >= 0) {
+                        $api = new API;
+                        $getList = $api->callAPI("GET", "http://localhost:8090/api/intention/between?first=" . $start . "%2000:00:00&second=" . $end . "%2023:59:59",  null, $_SESSION['user_token']);
+                        echo $getList;
+                        require_once('pdf.php');
+                        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+                        $pdf->SetSettings(json_decode($getList), "intencje_" . $start);
+                    } else {
+                        echo '<script>alert("Błedne daty!")</script>';
+                    }
+                } else {
+                    echo '<script>alert("Wybierz daty!")</script>';
+                }
+            }
+            ?>
 
-
-        <?php
-                include "footer.php";
-                ?>
+    <?php
+            include "footer.php";
+            ?>
 </body>
 
 </html>
