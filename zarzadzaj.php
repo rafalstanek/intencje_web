@@ -117,23 +117,11 @@ if (isset($_SESSION['user_type'])) {
 
                     require_once('pdf.php');
                     $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-
+                    $pdf->SetSettings($result);
                     // $pdf->SetCreator(PDF_CREATOR);
                     //  $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 001', PDF_HEADER_STRING);
                     //$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
                     //$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-                    $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
-                    //  $pdf->SetMargins(PDF_MARGIN_LEFT, PDF_MARGIN_TOP, PDF_MARGIN_RIGHT);
-                    $pdf->SetPrintHeader(false);
-                    $pdf->SetPrintFooter(false);
-                    $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
-                    // $fontname = TCPDF_FONTS::addTTFfont('classes/tcpdf_min/fonts/czcionka.ttf', 'TrueTypeUnicode', '', 96);
-                    $pdf->SetFont('courier', '', 15);
-                    $pdf->AddPage();
-                    $pdf->ColoredTable($result);
-                    ob_clean();
-                    $pdf->Output('doc.pdf', 'I'); //D - od razu pobiera
-
                 }
 
 
