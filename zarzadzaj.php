@@ -17,6 +17,10 @@ if (isset($_SESSION['user_type'])) {
     <meta name="author" content="Rafal Stanek">
     <title>Zarządzaj</title>
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="js/zarzadzaj.js"></script>
 </head>
 
 <body>
@@ -55,46 +59,40 @@ if (isset($_SESSION['user_type'])) {
     <div class="container">
         <div class="row d-flex justify-content-center mx-auto">
             <div class="col-lg-12 text-center mt-2">
-                <p class="lead">Wybierz dzień, aby zobaczyć intencje</p>
-                <form action="" method="post" id="form">
-                    <div class="form-group">
-                        <div class="row ustify-content-md-center">
-                            <div class="col-sm-4 align-self-center text-right">
-                                <label class=" font-weight-bold">Data:</label>
-                            </div>
-                            <div class="col-sm">
-                                <input class="form-control w-50" type="date" id="date" name="date" placeholder="data">
-                            </div>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col">
-                            <!--<input type="submit" class="btn btn-primary" name="select_date" value="Wybierz">-->
-                            <button type="submit" name="btn" id="btn" class="btn btn-info" data-toggle="modal"
-                                data-target="#exampleModal">Send Data</button>
-                        </div>
-                    </div>
-                </form>
-
+                <p class="lead">Zarządzanie</p>
+                <button name="btn" id="btn" class="btn btn-info" data-toggle="modal"
+                    data-target="#checkByDateModal">Dodaj
+                    intencję</button>
+                <button type="submit" name="btn" id="btn" class="btn btn-info" data-toggle="modal"
+                    data-target="#exampleModal">Generuj PDF</button>
+                <button type="submit" name="btn" id="btn" class="btn btn-info" data-toggle="modal"
+                    data-target="#exampleModal">Zmień hasło</button>
             </div>
 
-            <!-- MODAL -->
-            <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-                aria-hidden="true">
-                <div class="modal-dialog" role="document">
+            <!-- MODAL BY DATE-->
+            <div id="checkByDateModal" class="modal fade" role="dialog">
+                <div class="modal-dialog">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h5 class="modal-title" id="exampleModalLabel">Intencje dnia ...</h5>
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                <span aria-hidden="true">&times;</span>
-                            </button>
+                            <h4 class="mt-1">Dodawanie intencji</h4>
+                            <button type="button" class="close" data-dismiss="modal">&times;</button>
                         </div>
                         <div class="modal-body">
-                            <div id="bingo"></div>
+                            <div class="row">
+                                <div class="col-2"> <label><b>Data:</b></label></div>
+                                <div class="col-sm"><input type="date" name="date" id="date" class="form-control" />
+                                </div>
+                                <div class="col-sm">
+                                    <button type="button" name="check_intention_button" id="check_intention_button"
+                                        class="btn btn-info">Wybierz</button></div>
+                            </div>
+                            <div id="intention_list">
 
-                        </div>
-                        <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Zamknij</button>
+                            </div>
+                            <div id="textarea_intention_add">
+
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -102,35 +100,22 @@ if (isset($_SESSION['user_type'])) {
 
         </div>
 
-        <?php
-                if (isset($_POST['btn'])) {
-                    // echo 'ta';
+        <script type="text/javascript">
 
-                    $date = $_POST['date'];
-                    $from = $date . "%2000:00:00";
-                    $to = $date . "%2023:59:59";
-                    $api = new API;
-                    // $getIntentionJson = $api->callAPI("GET", "http://localhost:8090/api/intention/between?first=" . $from . "&second=" . $to, null, $_SESSION['user_token']);
-                    $getIntentionJson = $api->callAPI("GET", "http://localhost:8090/api/intention/week", null, $_SESSION['user_token']);
-                    $result = json_decode($getIntentionJson);
-                    //echo $result[0]->dayName;
+        </script>
 
-                    require_once('pdf.php');
-                    $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-                    $pdf->SetSettings($result);
-                    // $pdf->SetCreator(PDF_CREATOR);
-                    //  $pdf->SetHeaderData(PDF_HEADER_LOGO, PDF_HEADER_LOGO_WIDTH, PDF_HEADER_TITLE . ' 001', PDF_HEADER_STRING);
-                    //$pdf->setHeaderFont(array(PDF_FONT_NAME_MAIN, '', PDF_FONT_SIZE_MAIN));
-                    //$pdf->setFooterFont(array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
-                }
+        <!--
+
+        // require_once('pdf.php');
+        // $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+        // $pdf->SetSettings($result);
+        // }
+
+        -->
 
 
 
 
-                ?>
-        <!-- Bootstrap core JavaScript -->
-        <script src="vendor/jquery/jquery.min.js"></script>
-        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
         <?php
                 include "footer.php";
                 ?>
