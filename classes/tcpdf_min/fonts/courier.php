@@ -1,6 +1,6 @@
 <?php
 // TCPDF FONT FILE DESCRIPTION
-$type='core';
+$type='TrueTypeUnicode';
 $name='Courier';
 $up=-100;
 $ut=50;
