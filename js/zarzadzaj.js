@@ -36,7 +36,11 @@ $(document).ready(function () {
                   hour = hour.substr(11, 5)
                   intention =
                     intention +
-                    '<b>' +
+                    '<img onclick=\'onEditClick("' +
+                    json[0].intentionList[i].id +
+                    '")\' src="img/edit16.png" id="' +
+                    json[0].intentionList[i].id +
+                    '"> <b>' +
                     hour +
                     '</b> ' +
                     json[0].intentionList[i].text +
@@ -141,3 +145,9 @@ $(document).ready(function () {
     }
   })
 })
+
+function onEditClick (id) {
+  console.log('test ' + id)
+  var Id = $(this).data(id)
+  $('#editIntentionModal').modal('show')
+}

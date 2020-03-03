@@ -1,8 +1,13 @@
 ﻿<!DOCTYPE html>
 <?php
 require('classes/API.php');
-?>
+session_start();
 
+if (isset($_SESSION['user_type'])) {
+    header('Location: panel.php');
+}
+
+?>
 <html>
 
 <head>
@@ -10,7 +15,7 @@ require('classes/API.php');
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <meta name="description" content="Zarządzanie intencjami">
     <meta name="author" content="Rafal Stanek">
-    <title>Intencje</title>
+    <title>Logowanie</title>
     <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
 </head>
 
@@ -22,71 +27,107 @@ require('classes/API.php');
                 Najświętszej
                 Maryi Panny Częstochowskiej
                 w Brzezinach</a>
-            <button style="font-size: 2.1vmin;" class="navbar-toggler" type="button" data-toggle="collapse"
-                data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false"
-                aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarResponsive">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item">
-                        <a style="font-size: 2.1vmin;" class="nav-link" href="logowanie.php">Zaloguj</a>
-                    </li>
-                </ul>
-            </div>
         </div>
     </nav>
 
     <!-- Main content -->
-    <div class="container">
-        <div class="row ">
-            <div class="col-lg-12 text-center">
-                <img src="./img/nmp.jpg" class="img-responsive mt-3" width="300" height="420" alt="obraz">
-                <h3 class="mt-4">Intencje parafialne na najbliższe dni</h3>
+    <div class="container" style="padding-top: 8%">
+        <div class="row d-flex justify-content-center mx-auto">
+            <div class="col-lg-12 text-center mt-2">
+
+                <form method="post" action="">
+                    <div class="form-group">
+                        <div class="row ustify-content-md-center">
+                            <div class="col-md-2 align-self-center text-left">
+                                <label class="font-weight-bold">Nazwa użytkownika:</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="text" id="login" name="login"
+                                    placeholder="nazwa użytkownika">
+                            </div>
+                            <div id="user_text" class="col-sm align-self-center text-center">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="row">
+                            <div class="col-md-2 align-self-center text-left">
+                                <label class="font-weight-bold">Hasło:</label>
+                            </div>
+                            <div class="col-sm-7">
+                                <input class="form-control" type="password" id="password" name="password"
+                                    placeholder="hasło">
+                            </div>
+                            <div id="pass_text" class="col-sm align-self-center text-center">
+                            </div>
+                        </div>
+                    </div>
+                    <div id="error_text">
+                    </div>
+                    <div class="row">
+                        <div class="col">
+                            <input class="btn btn-primary" type="submit" name="logging" value="Zaloguj">
+                        </div>
+                    </div>
+                </form>
+
             </div>
         </div>
-        <div class="table-responsive">
-            <table class="table table-bordered table-striped table-nonfluid">
-                <tbody>
-                    <?php
-					$api = new API;
-					$getIntentionJson = $api->callAPI("GET", "http://localhost:8090/api/intention/week", null, "123");
-					$result = json_decode($getIntentionJson);
-					if ($result != null) {
-						for ($i = 0; $i < sizeof($result); $i++) {
-							if (sizeof($result) > 0) {
-								echo
-									'<tr>
-									<td class="font-weight-bold text-center w-25">' . $result[$i]->dayName . '<br/>
-									' . str_replace("-", ".", substr($result[$i]->date, -5)) . '
-									</td>
-									<td>';
-								for ($j = 0; $j < sizeof($result[$i]->intentionList); $j++) {
-									$intention = $result[$i]->intentionList[$j];
-									echo '<p><b>' . substr($intention->date, 11, -12) . '</b>        ' . $intention->text . '</p>';
-								}
-								echo '</td>
-							</tr>';
-							}
-						}
-					} else {
-						echo '<p class="lead text-center">Brak wprowadzonych intencji do systemu</p>';
-					}
+        <?php
+        if (isset($_POST['logging'])) {
+            $login = $_POST['login'];
+            $password = $_POST['password'];
+            $validate = 0;
+            if (strlen($password) == 0) {
+                echo '<script>document.getElementById("pass_text").innerHTML = "To pole nie może być puste!";
+                document.getElementById("pass_text").style.color = "red";</script>';
+            } else {
+                $validate++;
+            }
 
-					?>
-                </tbody>
-            </table>
-        </div>
+            if (strlen($login) == 0) {
+                echo '<script>document.getElementById("user_text").innerHTML = "To pole nie może być puste!";
+                document.getElementById("user_text").style.color = "red";</script>';
+            } else {
+                $validate++;
+            }
 
-    </div>
+            if ($validate == 2) {
+                $data = array(
+                    'username' => $login,
+                    'password' => $password
+                );
+                $payload = http_build_query($data);
+                $api = new API;
+                $loginUser = $api->callAPI("GET", "http://localhost:8090/token" . "?" . $payload, null, null);
+                if ($loginUser != "error") {
+                    $result = json_decode($loginUser);
+                    if ($result != null) {
+                        $_SESSION['user_id'] = $result->id;
+                        $_SESSION['user_token'] = $result->token;
+                        $_SESSION['user_type'] = "user";
+                        header('Location: panel.php');
+                    } else {
+                        echo '<script>document.getElementById("error_text").innerHTML = "Brak połączenia z serwerem";
+                    document.getElementById("error_text").style.color = "red";</script>';
+                    }
+                } else {
+                    echo '<script>document.getElementById("error_text").innerHTML = "Niepoprawny login i/lub hasło!";
+                    document.getElementById("error_text").style.color = "red";</script>';
+                }
+            } else {
+                echo '<script>document.getElementById("error_text").innerHTML = "Uzupełnij pole loginu i hasła!";
+                document.getElementById("error_text").style.color = "red";</script>';
+            }
+        }
+        ?>
 
-    <!-- Bootstrap core JavaScript -->
-    <script src="vendor/jquery/jquery.min.js"></script>
-    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-
-    <?php
-	include "footer.php";
-	?>
+        <!-- Bootstrap core JavaScript -->
+        <script src="vendor/jquery/jquery.min.js"></script>
+        <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+        <?php
+        include "footer.php";
+        ?>
 </body>
 
 </html>

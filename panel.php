@@ -99,6 +99,6 @@ if (isset($_SESSION['user_type'])) {
 <?php
     }
 } else {
-    header('Location: logowanie.php');
+    header('Location: index.php');
 }
 ?>

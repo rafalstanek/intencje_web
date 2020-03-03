@@ -168,6 +168,21 @@ if (isset($_SESSION['user_type'])) {
             </div>
         </div>
 
+        <!-- MODAL EDIT INTENTION-->
+        <div id="editIntentionModal" style="background-color: gray;" class="modal fade" role="dialog">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="mt-1">Edycja intencji</h4>
+                        <button type="button" class="close" data-dismiss="modal">&times;</button>
+                    </div>
+                    <div class="modal-body">
+                        <label><b>Treść:</b></label><textarea rows="2" name="text_intention"
+                            placeholder="Wpisz treść intencji" id="text_intention" class="form-control"></textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
 
     </div>
 
@@ -201,6 +216,6 @@ if (isset($_SESSION['user_type'])) {
 <?php
     }
 } else {
-    header('Location: logowanie.php');
+    header('Location: index.php');
 }
 ?>
