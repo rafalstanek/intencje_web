@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('classes/API.php');
+require_once('../classes/API.php');
 
 if (isset($_POST["old_password"]) && isset($_POST["new_password"])) {
     $old_password = $_POST['old_password'];

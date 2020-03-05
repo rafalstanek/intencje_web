@@ -1,21 +1,21 @@
 ﻿<?php
 
 // Include the main TCPDF library (search for installation path).
-require_once('classes\tcpdf_min\tcpdf.php');
+require_once('tcpdf_min\tcpdf.php');
 
 class MYPDF extends TCPDF
 {
 
     public function ColoredTable($result)
     {
-        $img_file = './img/header.png';
-        $img_file1 = './img/footer.png';
+        $img_file = '..\img\header.png';
+        $img_file1 = '..\img\footer.png';
 
         $bMargin = $this->getBreakMargin();
         $auto_page_break = $this->AutoPageBreak;
         $this->SetAutoPageBreak(false, 0);
-        $this->Image($img_file, 0, 0, 223, 40, '', '', '', false, 300, '', false, false, 0);
-        $this->Image($img_file1, 0, 287, 223, 10, '', '', '', false, 300, '', false, false, 0);
+        $this->Image($img_file, 0, 0, 223, 40, 'PNG', '', '', true, 300, '', false, false, 0);
+        $this->Image($img_file1, 0, 287, 223, 10, 'PNG', '', '', true, 300, '', false, false, 0);
         $this->SetAutoPageBreak($auto_page_break, $bMargin);
         $this->setPageMark();
         $this->Ln();

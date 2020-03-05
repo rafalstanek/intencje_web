@@ -1,6 +1,6 @@
 <?php
 session_start();
-require_once('classes/API.php');
+require_once('../classes/API.php');
 
 if (isset($_POST["create_datetime"])) {
     $date = $_POST["create_datetime"];

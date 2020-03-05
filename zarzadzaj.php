@@ -1,12 +1,22 @@
 ﻿<!DOCTYPE html>
 <?php
 ob_start();
+require('classes/API.php');
+require('classes/AUTH.php');
 session_start();
-require_once('classes/API.php');
 
 if (isset($_SESSION['user_type'])) {
     if ($_SESSION['user_type'] == "user") {
-
+        $auth = new AUTH;
+        $return_value = $auth->checkAuthorization($_SESSION['user_token']);
+        if ($return_value == "connection_error") {
+            echo '<script>alert("Brak połączenia z serwerem");</script>';
+            include('wyloguj.php');
+        } else {
+            if ($return_value == "auth_error") {
+                echo '<script>alert("Zalogowano na innym urządzeniu, w celach bezpieczeństwa zostaniesz teraz wylogowany");</script>';
+                include('wyloguj.php');
+            } elseif (($return_value == "auth_ok")) {
 ?>
 <html>
 
@@ -79,14 +89,17 @@ if (isset($_SESSION['user_type'])) {
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-2"> <label><b>Data:</b></label></div>
-                            <div class="col-sm"><input type="date" name="date" id="date" class="form-control" />
+                            <div class="col-sm"><input type="date" name="date" id="date" onchange="onDateChange()"
+                                    class="form-control w-75" />
                             </div>
+                            <!--
                             <div class="col-sm">
                                 <button type="button" name="check_intention_button" id="check_intention_button"
                                     class="btn btn-info">Wybierz</button></div>
+                        -->
                         </div>
                         <br />
-                        <div style="background-color: #D5FFB3;" id="intention_list">
+                        <div style="background-color: #eeffcc;" id="intention_list">
 
                         </div>
                         <div id="textarea_intention_add">
@@ -200,33 +213,37 @@ if (isset($_SESSION['user_type'])) {
     </div>
 
     <?php
-            if (isset($_POST['generate_pdf_button'])) {
-                $start = $_POST['date_start'];
-                $end = $_POST['date_end'];
-                if ($start != null && $end != null) {
-                    if (strtotime($end) - strtotime($start) >= 0) {
-                        $api = new API;
-                        $getList = $api->callAPI("GET", "http://localhost:8090/api/intention/between?first=" . $start . "%2000:00:00&second=" . $end . "%2023:59:59",  null, $_SESSION['user_token']);
-                        echo $getList;
-                        require_once('pdf.php');
-                        $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
-                        $pdf->SetSettings(json_decode($getList), "intencje_" . $start);
-                    } else {
-                        echo '<script>alert("Błedne daty!")</script>';
+                    if (isset($_POST['generate_pdf_button'])) {
+                        $start = $_POST['date_start'];
+                        $end = $_POST['date_end'];
+                        if ($start != null && $end != null) {
+                            if (strtotime($end) - strtotime($start) >= 0) {
+                                $api = new API;
+                                $getList = $api->callAPI("GET", "http://localhost:8090/api/intention/between?first=" . $start . "%2000:00:00&second=" . $end . "%2023:59:59",  null, $_SESSION['user_token']);
+                                echo $getList;
+                                require_once('classes/pdf.php');
+                                $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
+                                $pdf->SetSettings(json_decode($getList), "intencje_" . $start . "_" . $end);
+                            } else {
+                                echo '<script>alert("Błędne daty!")</script>';
+                            }
+                        } else {
+                            echo '<script>alert("Wybierz daty!")</script>';
+                        }
                     }
-                } else {
-                    echo '<script>alert("Wybierz daty!")</script>';
-                }
-            }
-            ?>
+                    ?>
 
     <?php
-            include "footer.php";
-            ?>
+                    include "footer.php";
+                    ?>
 </body>
 
 </html>
 <?php
+            }
+        }
+    } else {
+        header('Location: index.php');
     }
 } else {
     header('Location: index.php');
