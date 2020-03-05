@@ -86,7 +86,7 @@ if (isset($_SESSION['user_type'])) {
                                     class="btn btn-info">Wybierz</button></div>
                         </div>
                         <br />
-                        <div id="intention_list">
+                        <div style="background-color: #D5FFB3;" id="intention_list">
 
                         </div>
                         <div id="textarea_intention_add">
@@ -177,10 +177,21 @@ if (isset($_SESSION['user_type'])) {
                         <button type="button" class="close" data-dismiss="modal">&times;</button>
                     </div>
                     <div class="modal-body">
+                        <p class="lead">
+                            <div id="edit_intention_date_text"></div>
+                        </p>
                         <label><b>Treść:</b></label><textarea rows="2" name="text_intention_edit"
-                            placeholder="Wpisz treść intencji" id="text_intention_edit" class="form-control"></textarea>
-                        <button type="button" name="edit_intention_button" id="edit_intention_button"
-                            class="btn btn-info">Edytuj</button>
+                            placeholder="Wpisz treść intencji" id="text_intention_edit"
+                            class="form-control"></textarea><br />
+                        <div class="row text-center">
+                            <div class="col-sm px-md-5"><button type="button" name="edit_intention_button"
+                                    id="edit_intention_button" class="btn btn-info text-center">Edytuj</button>
+                            </div>
+                            <div class="col-sm px-md-5"><button type="button" name="delete_intention_button"
+                                    id="delete_intention_button" class="btn btn-danger text-center">Usuń</button>
+                            </div>
+                        </div>
+
                     </div>
                 </div>
             </div>

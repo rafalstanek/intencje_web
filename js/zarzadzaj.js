@@ -40,11 +40,15 @@ $(document).ready(function() {
                     json[0].intentionList[i].id +
                     '")\' src="img/edit16.png" id="' +
                     json[0].intentionList[i].id +
-                    '"> <b>' +
+                    '"> <b><a style="text-decoration: none; background-color: none; color:black;" href="#" ' +
+                    "onclick='onEditClick(\"" +
+                    json[0].intentionList[i].id +
+                    '")\'"' +
+                    "> " +
                     hour +
                     "</b> " +
                     json[0].intentionList[i].text +
-                    "<br/>";
+                    "</a><br/>";
                   text += intention;
                 }
                 document.getElementById("intention_list").innerHTML = text;
@@ -61,8 +65,9 @@ $(document).ready(function() {
                 selected_date[1] +
                 "." +
                 selected_date[0] +
-                ' r.</label><br /><label><b>Godzina:</b></label><input type="time" name="time_intention" id="time_intention" class="form-control" /><br/>' +
-                ' <button type="button" name="add_intention_button" id="add_intention_button" class="btn btn-info">Dodaj</button>';
+                ' r.</label><br /><label><b>Godzina:</b></label><input type="time" name="time_intention" id="time_intention" class="form-control" />' +
+                '<br/><div class="row text-center"><div class="col-sm px-md-5">' +
+                '<button type="button" name="add_intention_button" id="add_intention_button" class="btn btn-info">Dodaj</button></div></div>';
             }
           } else {
             alert($error_string);
@@ -144,18 +149,77 @@ $(document).ready(function() {
       alert("Uzupełnij wszystkie pola!");
     }
   });
+
+  //EDYCJA INTENCJI
+  $("#edit_intention_button").click(function() {
+    var id_intention = $("#edit_intention_button").val();
+    var new_text_intention = $("#text_intention_edit").val();
+
+    $.ajax({
+      url: "edit_intention.php",
+      method: "POST",
+      data: {
+        id_intention: id_intention,
+        text_intention: new_text_intention
+      },
+
+      success: function(data) {
+        if (data.length != 0) {
+          if (data == "error") {
+            alert("Wystąpił błąd");
+          } else {
+            var json = JSON.parse(data);
+            if (json.id != null) {
+              alert("Zmieniono treść intencji");
+              location.reload();
+            }
+          }
+        } else {
+          $("#editIntentionModal").modal("hide");
+          alert($error_string);
+        }
+      }
+    });
+  });
+
+  //USUWANIE INTENCJI
+  $("#delete_intention_button").click(function() {
+    var id_intention = $("#delete_intention_button").val();
+    console.log("delete " + id_intention);
+    $.ajax({
+      url: "edit_intention.php",
+      method: "POST",
+      data: {
+        delete_intention: id_intention
+      },
+
+      success: function(data) {
+        if (data.length != 0) {
+          if (data == "error") {
+            alert("Wystąpił błąd");
+          } else {
+            if (data == "ok") {
+              alert("Intencja została usunięta");
+              location.reload();
+            }
+          }
+        } else {
+          $("#editIntentionModal").modal("hide");
+          alert($error_string);
+        }
+      }
+    });
+  });
 });
 
 function onEditClick(id) {
-  // console.log("test " + id);
-  // var bookId = $(e.relatedTarget).data("book-id");
-  // $(e.currentTarget)
-  //   .find('textarea[name="text_intention"]')
-  //   .val(bookId);
-  // $("#editIntentionModal").modal("show");
   $("#editIntentionModal").on("show.bs.modal", function(e) {
     $(e.currentTarget)
       .find('button[name="edit_intention_button"]')
+      .val("" + id);
+
+    $(e.currentTarget)
+      .find('button[name="delete_intention_button"]')
       .val("" + id);
     $.ajax({
       url: "edit_intention.php",
@@ -171,14 +235,28 @@ function onEditClick(id) {
             var json = JSON.parse(data);
             if (json.id != null) {
               document.getElementById("text_intention_edit").value = json.text;
+
+              var hour_edit_intention = json.date.substr(11, 5);
+              var date_edit_intention = json.date.substr(0, 10);
+              var split_date = date_edit_intention.split("-");
+              $("#edit_intention_date_text").html(
+                "<b>Data:</b> " +
+                  split_date[2] +
+                  "." +
+                  split_date[1] +
+                  "." +
+                  split_date[0] +
+                  " r., <b>godzina:</b> " +
+                  hour_edit_intention
+              );
             }
           }
         } else {
+          $("#editIntentionModal").modal("hide");
           alert($error_string);
         }
       }
     });
   });
-
   $("#editIntentionModal").modal("show");
 }

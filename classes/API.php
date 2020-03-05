@@ -12,7 +12,7 @@ class API
          CURLOPT_HTTPHEADER,
          array(
             'Content-Type: application/json',
-            $auth,
+            'Authorization: Bearer ' . $auth,
             'Content-Length: ' . strlen($data)
          )
       );

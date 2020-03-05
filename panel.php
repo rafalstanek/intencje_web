@@ -5,6 +5,7 @@ session_start();
 
 if (isset($_SESSION['user_type'])) {
     if ($_SESSION['user_type'] == "user") {
+        // echo $_SESSION['user_token'];
 ?>
 <html>
 
@@ -58,7 +59,7 @@ if (isset($_SESSION['user_type'])) {
                 <tbody>
                     <?php
                             $api = new API;
-                            $getIntentionJson = $api->callAPI("GET", "http://localhost:8090/api/intention/week", null, null);
+                            $getIntentionJson = $api->callAPI("GET", "http://localhost:8090/api/intention/week", null, $_SESSION['user_token']);
                             $result = json_decode($getIntentionJson);
                             if ($result != null) {
                                 for ($i = 0; $i < sizeof($result); $i++) {
